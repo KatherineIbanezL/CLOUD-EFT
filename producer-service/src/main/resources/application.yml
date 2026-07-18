@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: producer-service
+
+  # 1. CONFIGURACIÓN DIRECTA DE ORACLE CLOUD
+  datasource:
+    url: jdbc:oracle:thin:@(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-santiago-1.oraclecloud.com))(connect_data=(service_name=gc3b947da08b29a_mbd_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: ADMIN
+    password: DUOCmbd#2026
+
+  # 2. CONFIGURACIÓN DE JPA / HIBERNATE
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle12cDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  # 3. CONFIGURACIÓN DE CONEXIÓN A RABBITMQ
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:admin}
+    password: ${RABBITMQ_PASSWORD:admin123}
+    listener:
+      simple:
+        default-requeue-rejected: false
+
+  # 4. CONFIGURACIÓN DE SEGURIDAD IDaaS
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AZURE_ISSUER_URI}
+          jwk-set-uri: ${AZURE_JWK_SET_URI}
+
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+        session-token: ${AWS_SESSION_TOKEN}
+      region:
+        static: ${AWS_REGION:us-east-1}
+
+# Propiedades personalizadas
+oracle:
+  net:
+    tns_admin: /app/src/main/resources/Wallet_MBD
+    wallet_location: /app/src/main/resources/Wallet_MBD
+
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:bucketduoc-s1}
+
+app:
+  security:
+    audience: ${AZURE_AUDIENCE}
+  rabbitmq:
+    exchange: curso.exchange
+    queue: cola-inscripciones-exitosas
+    routing-key: curso.routing.key
+    dlx-exchange: curso.dlx.exchange
+    dlq: cola-inscripciones-errores
+    dlq-routing-key: curso.dlq.routing.key
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    "[org.springframework.security]": INFO

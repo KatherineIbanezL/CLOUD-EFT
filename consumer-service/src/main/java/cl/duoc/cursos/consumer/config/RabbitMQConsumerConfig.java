@@ -39,10 +39,10 @@ public class RabbitMQConsumerConfig {
     // PROPIEDADES PARA EXAMEN 
     // =========================================================================
     
-    @Value("${app.rabbitmq.exam-queue:cola-examenes-validar}")
+    @Value("${app.rabbitmq.exam-queue}")
     private String examQueueName;
 
-    @Value("${app.rabbitmq.exam-routing-key:curso.examen.routing.key}")
+    @Value("${app.rabbitmq.exam-routing-key}")
     private String examRoutingKey;
 
     // =========================================================================

@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 
 @Service
-// ARQUITECTURA: Escucha la cola dinámica definida
-@RabbitListener(queues = "${app.rabbitmq.queue}")
 public class PlataformaConsumerService {
 
     private static final Logger log = LoggerFactory.getLogger(PlataformaConsumerService.class);
@@ -38,7 +36,7 @@ public class PlataformaConsumerService {
     // =========================================================================
     //  TRABAJO 1: PROCESAMIENTO DE INSCRIPCIONES Y GENERACIÓN DE COMPROBANTES
     // =========================================================================
-    @RabbitHandler
+    @RabbitListener(queues = "${app.rabbitmq.queue}")
     @Transactional
     public void procesarInscripcion(InscripcionCreadaEvent evento) {
         log.info("Evento recibido desde RabbitMQ -> Procesando inscripción ID: {}", evento.inscripcionId());
@@ -79,8 +77,7 @@ public class PlataformaConsumerService {
     // =========================================================================
     // TRABAJO 2: MOTOR DE CALIFICACIÓN AUTOMÁTICA EN TIEMPO REAL
     // =========================================================================
-
-    @RabbitHandler
+    @RabbitListener(queues = "${app.rabbitmq.exam-queue}")
     @Transactional
     public void procesarEvaluacionExamen(ExamenRendidoEvent evento) {
         log.info("Evento recibido desde RabbitMQ -> Corrigiendo Examen ID: {}", evento.examenId());

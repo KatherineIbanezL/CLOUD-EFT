@@ -35,6 +35,12 @@ public class RabbitMQConfig {
     private String dlqRoutingKey;
 
     // ====================================================================
+    // PROPIEDAD PARA EXÁMENES
+    // ====================================================================
+    @Value("${app.rabbitmq.exam-routing-key:curso.examen.routing.key}")
+    private String examRoutingKey;
+
+    // ====================================================================
     // 1. COLA PRINCIPAL (Cursos y Exámenes - Conecta fallos directo a la DLQ)
     // ====================================================================
     

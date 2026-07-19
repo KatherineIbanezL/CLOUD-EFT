@@ -17,16 +17,19 @@ public class PlataformaProducerService {
     private final RabbitTemplate rabbitTemplate;
     private final String exchange;
     private final String routingKey;
+    private final String examRoutingKey;
 
     // Innyección por constructor
     public PlataformaProducerService(
             RabbitTemplate rabbitTemplate,
             @Value("${app.rabbitmq.exchange}") String exchange,
-            @Value("${app.rabbitmq.routing-key}") String routingKey
+            @Value("${app.rabbitmq.routing-key}") String routingKey,
+            @Value("${app.rabbitmq.exam-routing-key}") String examRoutingKey
     ) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchange = exchange;
         this.routingKey = routingKey;
+        this.examRoutingKey = examRoutingKey;
     }
 
     // Método para despachar las inscripciones
@@ -42,6 +45,6 @@ public class PlataformaProducerService {
         log.info("Publicando examen rendido en RabbitMQ. ExamenID={}, InscripcionID={}", 
                  event.examenId(), event.inscripcionId());
         
-        rabbitTemplate.convertAndSend(exchange, routingKey, event);
+        rabbitTemplate.convertAndSend(exchange, examRoutingKey, event);
     }
 }

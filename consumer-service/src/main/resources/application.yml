@@ -54,8 +54,10 @@ app:
     queue: cola-inscripciones-exitosas
     routing-key: curso.routing.key
     dlx-exchange: curso.dlx.exchange
-    dlq: cola-inscripciones-errores
+    dlq: cola-plataforma-errores
     dlq-routing-key: curso.dlq.routing.key
+    exam-queue: cola-examenes-validar  
+    exam-routing-key: curso.examen.routing.key
 
 management:
   endpoints:

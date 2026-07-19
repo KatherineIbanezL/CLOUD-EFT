@@ -36,7 +36,17 @@ public class RabbitMQConsumerConfig {
     private String dlqRoutingKey;
 
     // =========================================================================
-    // INFRAESTRUCTURA DE LA COLA ACADÉMICA
+    // PROPIEDADES PARA EXAMEN 
+    // =========================================================================
+    
+    @Value("${app.rabbitmq.exam-queue:cola-examenes-validar}")
+    private String examQueueName;
+
+    @Value("${app.rabbitmq.exam-routing-key:curso.examen.routing.key}")
+    private String examRoutingKey;
+
+    // =========================================================================
+    // INFRAESTRUCTURA DE LA COLA INSCRIPCIÓN
     // =========================================================================
 
     @Bean
@@ -55,6 +65,23 @@ public class RabbitMQConsumerConfig {
     @Bean
     Binding cursosBinding() { 
         return BindingBuilder.bind(cursosQueue()).to(cursosExchange()).with(routingKey);
+    }
+
+    // =========================================================================
+    // INFRAESTRUCTURA PARA LA COLA DE EXAMEN
+    // =========================================================================
+
+    @Bean
+    Queue examenesQueue() {
+        return QueueBuilder.durable(examQueueName)
+                .withArgument("x-dead-letter-exchange", dlxExchangeName)
+                .withArgument("x-dead-letter-routing-key", dlqRoutingKey) // Reutiliza la misma DLQ
+                .build();
+    }
+
+    @Bean
+    Binding examenesBinding() {
+        return BindingBuilder.bind(examenesQueue()).to(cursosExchange()).with(examRoutingKey);
     }
 
     // =========================================================================
@@ -82,7 +109,7 @@ public class RabbitMQConsumerConfig {
 
     @Bean
     MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter("cl.duoc.*");
+        return new Jackson2JsonMessageConverter("*");
     }
 
     @Bean
